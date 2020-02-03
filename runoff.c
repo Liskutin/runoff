@@ -1,5 +1,6 @@
 #include <cs50.h>
 #include <stdio.h>
+#include <string.h>
 
 // Max voters and candidates
 #define MAX_VOTERS 100
@@ -127,9 +128,14 @@ int main(int argc, string argv[])
 // Record preference if vote is valid
 bool vote(int voter, int rank, string name)
 {
+    //Each voter (value i) inputs an input. This loops go through candidates name and check if its valid input
     for(int k = 0; k < candidate_count; k++){
-        if(strcmp(name, candidate[k].name) == 0){
+        if(strcmp(name, candidates[k].name) == 0){
+            //record data to 2d array. Voter is value i and rank is value j. Voter value (i) stays same untill all ranks (value j) are inputed. Hence populating only first row and then shifts to second.
             preferences[voter][k] = rank;
+            if(rank == 0){
+                candidates[k].votes += 1; // I guess will be used to check if somebody got majority.
+            }
             return true;
         }
     }
@@ -140,6 +146,13 @@ bool vote(int voter, int rank, string name)
 // Tabulate votes for non-eliminated candidates
 void tabulate(void)
 {
+    for(int i = 0; i < voter_count; i++){
+        for(int j = 0; j < candidate_count; j++){
+            if(preferences[i][0] == 0 && candidates[j].eliminated != true){
+                candidates[j].votes += 1;
+            }
+        }
+    }
     // TODO
     return;
 }
